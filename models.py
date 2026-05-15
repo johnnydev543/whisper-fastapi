@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, Union
+from typing import Optional, Dict, Any
 from enum import Enum
 
 class TaskStatus(str, Enum):
@@ -16,7 +16,7 @@ class TranscribeRequest(BaseModel):
 class TaskResponse(BaseModel):
     task_id: str
     status: TaskStatus
-    result: Optional[Union[str, Dict[str, Any]]] = None
+    result: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
     model: Optional[str] = None
     language: Optional[str] = None

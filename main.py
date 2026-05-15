@@ -101,7 +101,7 @@ async def transcribe_audio(
 @app.get("/task/{task_id}", response_model=TaskResponse)
 async def get_task(task_id: str):
     status = worker.get_task_status(task_id)
-    task_response = TaskResponse(
+    return TaskResponse(
         task_id=task_id,
         status=status["status"],
         result=status.get("result"),
@@ -110,7 +110,6 @@ async def get_task(task_id: str):
         language=status.get("language"),
         output_format=status.get("output_format")
     )
-    return task_response.model_dump()
 
 @app.get("/health", response_model=HealthResponse)
 async def health():

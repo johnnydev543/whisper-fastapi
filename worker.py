@@ -114,7 +114,11 @@ class Worker:
 
             # Generate output
             if task.output_format == "srt":
-                result = self._generate_srt(transcriptions)
+                result = {
+                    "transcription": " ".join([t["text"] for t in transcriptions]),
+                    "segments": transcriptions,
+                    "srt": self._generate_srt(transcriptions)
+                }
             else:
                 result = {"transcription": " ".join([t["text"] for t in transcriptions])}
 
