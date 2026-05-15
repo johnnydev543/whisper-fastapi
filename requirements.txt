@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+openai-whisper
+onnxruntime
+hailo-platform
+hailort
+silero-vad
+ffmpeg-python
+psutil
+pydantic
+numpy
+torch
+torchaudio
+transformers
