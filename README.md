@@ -99,6 +99,17 @@ Parameters:
 
 Returns: `{"task_id": "uuid"}`
 
+#### Example curl request
+```bash
+curl -X POST "http://localhost:8000/transcribe" \
+  -F "file=@./test.mp3"
+```
+
+Example response:
+```json
+{"task_id":"1d55a6e9-741a-4944-8ae2-7dc4ad07e44f"}
+```
+
 ### GET /task/{task_id}
 Get task status and result.
 
