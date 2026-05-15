@@ -101,6 +101,7 @@ Returns: `{"task_id": "uuid"}`
 
 #### Example curl request
 ```bash
+# Basic transcription with default settings
 curl -X POST "http://localhost:8000/transcribe" \
   -F "file=@./test.mp3"
 ```
@@ -108,6 +109,48 @@ curl -X POST "http://localhost:8000/transcribe" \
 Example response:
 ```json
 {"task_id":"1d55a6e9-741a-4944-8ae2-7dc4ad07e44f"}
+```
+
+#### Advanced examples with optional parameters
+
+Specify model size:
+```bash
+curl -X POST "http://localhost:8000/transcribe" \
+  -F "file=@./test.mp3" \
+  -F "model=base"
+```
+
+Specify language:
+```bash
+curl -X POST "http://localhost:8000/transcribe" \
+  -F "file=@./test.mp3" \
+  -F "language=en"
+```
+
+Request SRT subtitle format:
+```bash
+curl -X POST "http://localhost:8000/transcribe" \
+  -F "file=@./test.mp3" \
+  -F "output_format=srt"
+```
+
+All parameters combined:
+```bash
+curl -X POST "http://localhost:8000/transcribe" \
+  -F "file=@./test.mp3" \
+  -F "model=base" \
+  -F "language=zh" \
+  -F "output_format=srt"
+```
+
+Query task status:
+```bash
+curl http://localhost:8000/task/1d55a6e9-741a-4944-8ae2-7dc4ad07e44f
+```
+
+Check system health:
+```bash
+curl http://localhost:8000/health
 ```
 
 ### GET /task/{task_id}
