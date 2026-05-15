@@ -15,14 +15,64 @@ A FastAPI service for speech-to-text transcription with hardware acceleration su
 
 ## Installation
 
-1. Install dependencies:
+### System Requirements
+- Python 3.11+ (Python 3.14 may not be supported by HailoRT yet)
+- FFmpeg
+- Hailo-8/Hailo-8L (optional, for acceleration)
+
+### Dependencies Installation
+
+1. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. For Hailo support, install HailoRT and hailo-apps-infra.
+2. Install FFmpeg:
+   ```bash
+   # Ubuntu/Debian
+   sudo apt install ffmpeg
 
-3. Ensure ffmpeg is installed.
+   # macOS
+   brew install ffmpeg
+
+   # Windows
+   # Download from https://ffmpeg.org/download.html
+   ```
+
+### Hailo Installation (for Raspberry Pi 5)
+
+1. Install HailoRT system packages:
+   ```bash
+   sudo apt update
+   sudo apt install hailo-all
+   ```
+
+2. Install PyHailoRT wheel:
+   - Go to https://hailo.ai/developer-zone/software-downloads/
+   - Download "HailoRT – Python package (whl)" for Python 3.11, aarch64
+   - File name: `hailort-4.21.0-cp311-cp311-linux_aarch64.whl`
+   - Install: `pip install hailort-4.21.0-cp311-cp311-linux_aarch64.whl`
+
+3. Install hailo-apps-infra for model management:
+   ```bash
+   git clone https://github.com/hailo-ai/hailo-apps-infra.git
+   cd hailo-apps-infra
+   sudo ./scripts/cleanup_installation.sh
+   sudo ./install.sh
+   ```
+
+### Hailo Installation (for x86 Ubuntu)
+
+1. Download and install HailoRT from developer zone
+2. Install PyHailoRT wheel for x86_64
+3. Install hailo-apps-infra as above
+
+### Version Detection
+
+Run the detection script to check your setup:
+```bash
+python detect_hailo.py
+```
 
 ## Usage
 

@@ -52,11 +52,12 @@ class HardwareManager:
             from hailo_platform import Device
             devices = Device.scan()
             if devices:
-                # Assume models are available via hailo-apps
-                # For now, just check if import works
+                logger.info(f"Found {len(devices)} Hailo device(s)")
+                # Check if models are available
+                # hailo-apps should have downloaded models
                 return True
         except ImportError:
-            logger.warning("Hailo platform not available")
+            logger.warning("hailo_platform not installed. Install from https://hailo.ai/developer-zone/software-downloads/")
         except Exception as e:
             logger.warning(f"Hailo detection failed: {e}")
         return False

@@ -2,8 +2,6 @@ fastapi
 uvicorn[standard]
 openai-whisper
 onnxruntime
-hailo-platform
-hailort
 silero-vad
 ffmpeg-python
 psutil
@@ -12,3 +10,5 @@ numpy
 torch
 torchaudio
 transformers
+# hailo-platform and hailort must be installed manually from Hailo developer zone
+# See README.md for installation instructions
