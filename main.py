@@ -4,14 +4,15 @@ import os
 import tempfile
 import uuid
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
+from typing import Optional
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Form
 from fastapi.responses import JSONResponse
 import uvicorn
 
 from hardware import HardwareManager
 from audio import AudioProcessor
 from worker import Worker, Task
-from models import TranscribeRequest, TaskResponse, HealthResponse
+from models import TaskResponse, HealthResponse
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -62,7 +63,9 @@ app = FastAPI(lifespan=lifespan)
 @app.post("/transcribe", response_model=dict)
 async def transcribe_audio(
     file: UploadFile = File(...),
-    request: TranscribeRequest = Depends()
+    model: str = Form(default="tiny"),
+    language: Optional[str] = Form(default=None),
+    output_format: str = Form(default="json")
 ):
     # Validate file type
     allowed_extensions = ['.wav', '.flac', '.mp3', '.m4a', '.ogg']
@@ -86,9 +89,9 @@ async def transcribe_audio(
     task = Task(
         task_id=task_id,
         audio_path=audio_path,
-        model_name=request.model,
-        language=request.language,
-        output_format=request.output_format
+        model_name=model,
+        language=language,
+        output_format=output_format
     )
 
     await worker.add_task(task)
