@@ -67,8 +67,9 @@ class Worker:
         self.tasks[task.task_id]["status"] = TaskStatus.PROCESSING
 
         try:
-            # Normalize audio
-            normalized_path = task.audio_path.replace('.wav', '_norm.wav')
+            # Normalize audio into a new temporary WAV file
+            base, _ = os.path.splitext(task.audio_path)
+            normalized_path = f"{base}_norm.wav"
             self.audio_processor.normalize_audio(task.audio_path, normalized_path)
 
             # Load audio
