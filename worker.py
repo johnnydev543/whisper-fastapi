@@ -52,7 +52,10 @@ class Worker:
             "status": TaskStatus.PENDING,
             "result": None,
             "error": None,
-            "created_at": time.time()
+            "created_at": time.time(),
+            "model": task.model_name,
+            "language": task.language,
+            "output_format": task.output_format
         }
         await self.queue.put(task)
         return task.task_id

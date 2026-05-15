@@ -18,6 +18,9 @@ class TaskResponse(BaseModel):
     status: TaskStatus
     result: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
+    model: Optional[str] = None
+    language: Optional[str] = None
+    output_format: Optional[str] = None
 
 class HealthResponse(BaseModel):
     hardware_engine: str

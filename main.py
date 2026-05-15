@@ -102,7 +102,10 @@ async def get_task(task_id: str):
         task_id=task_id,
         status=status["status"],
         result=status.get("result"),
-        error=status.get("error")
+        error=status.get("error"),
+        model=status.get("model"),
+        language=status.get("language"),
+        output_format=status.get("output_format")
     )
 
 @app.get("/health", response_model=HealthResponse)
