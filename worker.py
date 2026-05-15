@@ -2,7 +2,8 @@ import asyncio
 import logging
 import os
 import time
-from typing import Dict, Any
+import threading
+from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from audio import AudioProcessor
 from hardware import HardwareManager
@@ -24,6 +25,7 @@ class Worker:
         self.audio_processor = audio_processor
         self.queue = asyncio.Queue()
         self.tasks: Dict[str, Dict[str, Any]] = {}
+        self.task_lock = threading.Lock()
         self.running = True
 
     async def start(self):
@@ -34,7 +36,7 @@ class Worker:
         while self.running:
             try:
                 task = await asyncio.wait_for(self.queue.get(), timeout=1.0)
-                await self.process_task(task)
+                await asyncio.to_thread(self.process_task, task)
                 self.queue.task_done()
             except asyncio.TimeoutError:
                 continue
@@ -61,13 +63,15 @@ class Worker:
         return task.task_id
 
     def get_task_status(self, task_id: str) -> Dict[str, Any]:
-        return self.tasks.get(task_id, {"status": TaskStatus.FAILED, "error": "Task not found"})
+        with self.task_lock:
+            return self.tasks.get(task_id, {"status": TaskStatus.FAILED, "error": "Task not found"})
 
-    async def process_task(self, task: Task):
+    def process_task(self, task: Task):
         """
         Process a transcription task.
         """
-        self.tasks[task.task_id]["status"] = TaskStatus.PROCESSING
+        with self.task_lock:
+            self.tasks[task.task_id]["status"] = TaskStatus.PROCESSING
 
         try:
             # Normalize audio into a new temporary WAV file
@@ -112,10 +116,11 @@ class Worker:
             if task.output_format == "srt":
                 result = self._generate_srt(transcriptions)
             else:
-                result = {"transcription": " ".join([t["text"] for t in transcriptions]), "segments": transcriptions}
+                result = {"transcription": " ".join([t["text"] for t in transcriptions])}
 
-            self.tasks[task.task_id]["status"] = TaskStatus.COMPLETED
-            self.tasks[task.task_id]["result"] = result
+            with self.task_lock:
+                self.tasks[task.task_id]["status"] = TaskStatus.COMPLETED
+                self.tasks[task.task_id]["result"] = result
 
             # Cleanup temp files
             os.unlink(task.audio_path)
@@ -124,8 +129,9 @@ class Worker:
 
         except Exception as e:
             logger.error(f"Task {task.task_id} failed: {e}")
-            self.tasks[task.task_id]["status"] = TaskStatus.FAILED
-            self.tasks[task.task_id]["error"] = str(e)
+            with self.task_lock:
+                self.tasks[task.task_id]["status"] = TaskStatus.FAILED
+                self.tasks[task.task_id]["error"] = str(e)
 
     def _generate_srt(self, segments: list) -> str:
         """
