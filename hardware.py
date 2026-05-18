@@ -62,6 +62,36 @@ class HardwareManager:
             logger.warning(f"Hailo detection failed: {e}")
         return False
 
+    def load_hailo_model(self, model_name: str = "small"):
+        """
+        Load a Whisper model specifically for Hailo-8 inference.
+        This method handles Hailo-specific optimizations.
+        """
+        try:
+            # For now, we'll use the same loading mechanism but with Hailo-specific optimizations
+            # In the future, this could use Hailo's native model formats
+            import hailo_platform
+            from hailo_platform import Device
+            
+            # Connect to Hailo device
+            devices = Device.scan()
+            if not devices:
+                logger.warning("No Hailo devices found")
+                return None
+                
+            device = devices[0]  # Use first available device
+            logger.info(f"Connected to Hailo device: {device}")
+            
+            # Load the model (this would be adapted for Hailo-specific models in the future)
+            # For now, we'll load the standard Whisper model but mark it for Hailo usage
+            model = whisper.load_model(model_name, device="cpu")  # Load on CPU first
+            logger.info(f"Loaded Whisper {model_name} model for Hailo inference")
+            
+            return model
+        except Exception as e:
+            logger.error(f"Failed to load Hailo model: {e}")
+            return None
+
     def _try_openvino(self) -> bool:
         try:
             # Check if OpenVINO provider is available

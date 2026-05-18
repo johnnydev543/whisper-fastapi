@@ -10,5 +10,7 @@ numpy
 torch
 torchaudio
 transformers
+# Hailo requirements (optional)
 # hailo-platform and hailort must be installed manually from Hailo developer zone
 # See README.md for installation instructions
+hailo-platform>=4.21.0

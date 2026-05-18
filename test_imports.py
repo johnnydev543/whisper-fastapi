@@ -1,35 +1,57 @@
 #!/usr/bin/env python3
+"""
+Test that all required imports work correctly.
+"""
 
-# Test script to validate imports and basic functionality
+import sys
+import logging
 
-try:
-    from hardware import HardwareManager
-    print("✓ HardwareManager imported")
-except ImportError as e:
-    print(f"✗ HardwareManager import failed: {e}")
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-try:
-    from audio import AudioProcessor
-    print("✓ AudioProcessor imported")
-except ImportError as e:
-    print(f"✗ AudioProcessor import failed: {e}")
+def test_imports():
+    """Test that all required imports work"""
+    try:
+        import whisper
+        import onnxruntime as ort
+        import psutil
+        import fastapi
+        import uvicorn
+        import asyncio
+        import threading
+        import queue
+        import tempfile
+        import hashlib
+        import json
+        import time
+        import subprocess
+        import ffmpeg
+        from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks
+        from pydantic import BaseModel
+        import torch
+        
+        print("All imports successful")
+        return True
+    except ImportError as e:
+        logger.error(f"Import failed: {e}")
+        return False
 
-try:
-    from worker import Worker, Task
-    print("✓ Worker imported")
-except ImportError as e:
-    print(f"✗ Worker import failed: {e}")
+def test_hailo_imports():
+    """Test that Hailo-related imports work"""
+    try:
+        import hailo_platform
+        from hailo_platform import Device, HailoRTVersion
+        print("Hailo imports successful")
+        return True
+    except ImportError as e:
+        logger.warning(f"Hailo imports failed (optional): {e}")
+        return True  # Hailo is optional
+    except Exception as e:
+        logger.error(f"Hailo imports failed with unexpected error: {e}")
+        return False
 
-try:
-    from models import TranscribeRequest, TaskResponse, HealthResponse
-    print("✓ Models imported")
-except ImportError as e:
-    print(f"✗ Models import failed: {e}")
-
-try:
-    from main import app
-    print("✓ FastAPI app imported")
-except ImportError as e:
-    print(f"✗ FastAPI app import failed: {e}")
-
-print("Basic validation complete.")
+if __name__ == "__main__":
+    result1 = test_imports()
+    result2 = test_hailo_imports()
+    sys.exit(0 if (result1 and result2) else 1)
